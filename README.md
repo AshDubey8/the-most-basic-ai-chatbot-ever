@@ -7,7 +7,6 @@ A chatbot built with Streamlit and Groq's API.
 - Web-based chat interface
 - Connects to Groq's language models (Llama 3.1)
 - Maintains conversation history during session
-- ~60 lines of Python
 
 ## Setup
 
@@ -92,7 +91,7 @@ chatbot/
 - Chat history clears on page refresh  
 - Each message is sent independently without conversation context
 - Basic error handling only
-- No streaming responses (displays after generation completes)
+- No streaming responses
 
 ## License
 
