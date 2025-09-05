@@ -94,10 +94,6 @@ chatbot/
 - Basic error handling only
 - No streaming responses (displays after generation completes)
 
-## Why Not Use LangChain?
-
-LangChain adds unnecessary complexity for a basic chatbot. This project uses only `requests` and `streamlit` - 2 dependencies instead of dozens. The entire codebase is readable in under a minute.
-
 ## License
 
 MIT
