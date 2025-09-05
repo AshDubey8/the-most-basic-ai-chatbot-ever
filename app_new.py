@@ -2,11 +2,12 @@ import streamlit as st
 import requests
 import os
 
+# Load environment variables from .env file
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    
+    # If python-dotenv is not installed, try to load .env manually
     try:
         with open('.env', 'r') as f:
             for line in f:
@@ -23,12 +24,14 @@ if not GROQ_API_KEY:
     except:
         GROQ_API_KEY = ""
 
+# Professional page config
 st.set_page_config(
     page_title="Assistant",
     page_icon="◉",
     layout="centered"
 )
 
+# Ultra-professional CSS
 st.markdown("""
 <style>
     /* Remove Streamlit branding */
@@ -50,19 +53,9 @@ st.markdown("""
         letter-spacing: 3px;
         text-transform: uppercase;
         text-align: center;
-        margin: 0 auto 30px auto;
+        margin-bottom: 30px;
         padding-bottom: 15px;
         border-bottom: 1px solid #e0e0e0;
-        max-width: 600px;
-    }
-    
-    /* Center the main container */
-    .main .block-container {
-        padding-top: 2rem;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        max-width: 800px;
-        margin: 0 auto;
     }
     
     /* Chat container */
@@ -127,22 +120,12 @@ st.markdown("""
         letter-spacing: 1px;
         padding: 8px 16px;
         transition: all 0.2s;
-        width: 100%;
-        margin: 0 auto;
-        display: block;
     }
     
     .stButton > button:hover {
         background-color: #f8f8f8;
         border-color: #999;
         color: #333;
-    }
-    
-    /* Button container centering */
-    div[data-testid="column"]:nth-child(2) {
-        display: flex;
-        justify-content: center;
-        align-items: center;
     }
     
     /* Spinner */
@@ -167,13 +150,14 @@ def get_response(message, history):
         "Content-Type": "application/json"
     }
     
+    # Build conversation history for context
     messages = []
-    for msg in history[-6:]: 
+    for msg in history[-6:]:  # Last 3 exchanges for context
         messages.append({"role": msg["role"], "content": msg["content"]})
     messages.append({"role": "user", "content": message})
     
     data = {
-        "model": "llama-3.1-8b-instant", #switch to diff model if deprecated, ref groq docs
+        "model": "llama-3.1-8b-instant",
         "messages": messages,
         "max_tokens": 200,
         "temperature": 0.7
@@ -187,28 +171,41 @@ def get_response(message, history):
     else:
         return "I apologize, but I'm unable to process your request at the moment."
 
+# Title
 st.markdown("# Assistant")
 
+# Initialize session
 if 'messages' not in st.session_state:
     st.session_state.messages = []
 
+# Professional avatars - using simple text
+AVATARS = {
+    "user": "U",      # Simple "U" for User
+    "assistant": "A"  # Simple "A" for Assistant
+}
+
+# Display messages
 for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
+    with st.chat_message(msg["role"], avatar=AVATARS[msg["role"]]):
         st.write(msg["content"])
 
+# Input handling
 if prompt := st.chat_input("Message"):
+    # Add user message
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
+    with st.chat_message("user", avatar=AVATARS["user"]):
         st.write(prompt)
     
-    with st.chat_message("assistant"):
+    # Generate response
+    with st.chat_message("assistant", avatar=AVATARS["assistant"]):
         with st.spinner(""):
             response = get_response(prompt, st.session_state.messages)
             st.write(response)
             st.session_state.messages.append({"role": "assistant", "content": response})
 
+# Minimalist clear button
 st.markdown("<br>", unsafe_allow_html=True)
-col1, col2, col3 = st.columns([1, 1, 1])
+col1, col2, col3 = st.columns([2, 1, 2])
 with col2:
     if st.button("CLEAR", use_container_width=True):
         st.session_state.messages = []
